@@ -25,7 +25,7 @@
  * limitations under the License.
  */
 
-%module(directors="1") tesseract_ros_python
+%module(directors="1", package="tesseract_ros") tesseract_ros_python
 
 // Include all headers from primary module
 %{

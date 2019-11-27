@@ -54,6 +54,10 @@ target_include_directories(${SWIG_MODULE_tesseract_python_REAL_NAME}  SYSTEM PUB
 set_target_properties(${SWIG_MODULE_tesseract_python_REAL_NAME}
   PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract)
 
+add_custom_command(TARGET ${SWIG_MODULE_tesseract_python_REAL_NAME} POST_BUILD COMMAND 
+${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/swig/__init__.py
+$<SHELL_PATH:$<TARGET_FILE_DIR:${SWIG_MODULE_tesseract_python_REAL_NAME}>>/__init__.py)
+
 # Check for ROS support
 find_package(tesseract_msgs)
 find_package(tesseract_rosutils)
@@ -102,6 +106,11 @@ if(BUILD_TESSERACT_ROS_PYTHON)
 
   set_target_properties(${SWIG_MODULE_tesseract_ros_python_REAL_NAME}
     PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_ros)
+
+  add_custom_command(TARGET ${SWIG_MODULE_tesseract_ros_python_REAL_NAME} POST_BUILD COMMAND 
+    ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/swig/ros/__init__.py
+    $<SHELL_PATH:$<TARGET_FILE_DIR:${SWIG_MODULE_tesseract_ros_python_REAL_NAME}>>/__init__.py)
+
 endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
