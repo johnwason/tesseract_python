@@ -29,6 +29,7 @@
 
 // Include all headers from primary module
 %{
+//#include <ros/console.h>
 #include <tesseract/tesseract.h>
 #include <tesseract_motion_planners/trajopt/trajopt_motion_planner.h>
 #include <tesseract_motion_planners/trajopt/config/trajopt_planner_default_config.h>

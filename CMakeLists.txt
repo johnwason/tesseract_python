@@ -12,6 +12,8 @@ MESSAGE(STATUS "tesseract_python version: ${tesseract_python_version}")
 if (NOT MSVC)
   #add_compile_options(-std=c++11 -Wall -Wextra -Wno-write-strings -Wno-unused-paramete -Wno-suggest-override)
   add_compile_options(-std=c++11 -w)
+else()
+  add_compile_options(/bigobj)
 endif()
 
 find_package(trajopt REQUIRED)
@@ -25,6 +27,28 @@ find_package(trajopt REQUIRED)
 
 find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
+
+# Find NumPy
+
+find_path(NUMPY_INCLUDE_NDARRAYOBJECT_DIR numpy/ndarrayobject.h PATHS ${PYTHON_INCLUDE_DIRS} NO_DEFAULT_PATH)
+if (NUMPY_INCLUDE_NDARRAYOBJECT_DIR)
+set(NUMPY_INCLUDE_DIR ${NUMPY_INCLUDE_NDARRAYOBJECT_DIR})
+else()
+execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; import os; print(os.path.dirname(numpy.__file__) + '/core/include')" RESULT_VARIABLE FIND_NUMPY_RESULT OUTPUT_VARIABLE NUMPY_INCLUDE_DIR )
+string(STRIP "${NUMPY_INCLUDE_DIR}" NUMPY_INCLUDE_DIR)
+
+if(${FIND_NUMPY_RESULT})
+message(FATAL_ERROR "Could not determine NumPy include directory")
+endif()
+endif()
+
+if (NOT EXISTS "${NUMPY_INCLUDE_DIR}/numpy/ndarrayobject.h")
+message(FATAL_ERROR "Could not find numpy/ndarrayobject.h include file")
+endif()
+
+message(STATUS "NumPy Include Directory: ${NUMPY_INCLUDE_DIR}")
+
+# End Find NumPy
 
 include(FindSWIG)
 find_package(SWIG 4.0.0 REQUIRED)
@@ -49,6 +73,8 @@ target_include_directories(${SWIG_MODULE_tesseract_python_REAL_NAME}  SYSTEM PUB
     ${console_bridge_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${TinyXML2_INCLUDE_DIRS}
+	${PYTHON_INCLUDE_DIRS}
+	${NUMPY_INCLUDE_DIR}
     $<TARGET_PROPERTY:tesseract::tesseract,INTERFACE_INCLUDE_DIRECTORIES>)
 
 set_target_properties(${SWIG_MODULE_tesseract_python_REAL_NAME}
@@ -65,8 +91,10 @@ find_package(geometry_msgs)
 find_package(std_msgs)
 find_package(roscpp)
 find_package(roslib)
+find_package(rosconsole)
 
-if( tesseract_msgs_FOUND AND tesseract_rosutils_FOUND AND geometry_msgs_FOUND AND std_msgs_FOUND AND roscpp_FOUND AND roslib_FOUND)
+# This is not working on WIN32 for some reason?
+if(NOT WIN32 AND tesseract_msgs_FOUND AND tesseract_rosutils_FOUND AND geometry_msgs_FOUND AND std_msgs_FOUND AND roscpp_FOUND AND roslib_FOUND AND rosconsole_FOUND)
 message(STATUS "Found Tesseract ROS support, building tesseract_ros_python")
 set (BUILD_TESSERACT_ROS_PYTHON ON CACHE BOOL "Build tesseract_ros_python module")
 else()
@@ -84,14 +112,17 @@ if(BUILD_TESSERACT_ROS_PYTHON)
   swig_link_libraries(tesseract_ros_python 
     ${tesseract_rosutils_LIBRARIES}
     ${tesseract_msgs_LIBRARIES}
-    ${roscpp_LIBRARIES}
-    ${roslib_LIBRARIES}
     tesseract::tesseract_motion_planners_trajopt 
     tesseract::tesseract_motion_planners_core 
     tesseract::tesseract_visualization 
     tesseract::tesseract trajopt::trajopt 
     ${PYTHON_LIBRARIES} 
-    ${EIGEN3_LIBRARIES} ${PYTHON_LIBRARIES})
+    ${EIGEN3_LIBRARIES}
+	${roscpp_LIBRARIES}
+    ${roslib_LIBRARIES}
+	${rosconsole_LIBRARIES}
+	)
+	
   target_include_directories(${SWIG_MODULE_tesseract_ros_python_REAL_NAME} PUBLIC 
       "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
       "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/swig>"
@@ -102,6 +133,8 @@ if(BUILD_TESSERACT_ROS_PYTHON)
       ${console_bridge_INCLUDE_DIRS}
       ${Boost_INCLUDE_DIRS}
       ${TinyXML2_INCLUDE_DIRS}
+	  ${PYTHON_INCLUDE_DIRS}
+	  ${NUMPY_INCLUDE_DIR}
       $<TARGET_PROPERTY:tesseract::tesseract,INTERFACE_INCLUDE_DIRECTORIES>)
 
   set_target_properties(${SWIG_MODULE_tesseract_ros_python_REAL_NAME}

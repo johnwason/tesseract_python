@@ -1,5 +1,5 @@
 %{
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 %}
 
 %typemap(in) const Json::Value& (Json::Value temp){
