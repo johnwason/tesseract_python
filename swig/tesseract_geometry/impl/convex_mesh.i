@@ -29,8 +29,8 @@ public:
       return new tesseract_geometry::ConvexMesh(vertices1, faces1, resource, scale);
   }
 
-  ConvexMesh(const const tesseract_common::VectorVector3d& vertices,
-             const const Eigen::VectorXi& faces,
+  ConvexMesh(const tesseract_common::VectorVector3d& vertices,
+             const Eigen::VectorXi& faces,
              int face_count,
              tesseract_common::Resource::Ptr resource = nullptr,
              Eigen::Vector3d scale = Eigen::Vector3d(1, 1, 1))
@@ -44,12 +44,12 @@ public:
 
 %extend {
 
-  const tesseract_common::VectorVector3d getVertices()
+  tesseract_common::VectorVector3d getVertices()
   {
     return *$self->getVertices();
   }
 
-  const Eigen::VectorXi getFaces()
+  Eigen::VectorXi getFaces()
   {
     return *$self->getFaces();
   }

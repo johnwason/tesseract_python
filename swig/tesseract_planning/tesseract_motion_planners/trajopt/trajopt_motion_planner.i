@@ -16,8 +16,18 @@ public:
 
   ~TrajOptMotionPlanner() {}
 
-  bool setConfiguration(const TrajOptPlannerConfig::Ptr config);
+  //bool setConfiguration(const TrajOptPlannerConfig::Ptr config);
+  %extend {
+    void setConfiguration(const TrajOptPlannerConfig::Ptr config)
+	{
+	  if (!$self->setConfiguration(config))
+      {
+	     throw std::runtime_error("setConfiguration failed");
+      }
+	}
+  }
 
+  %rename(_solve) solve;
   tesseract_common::StatusCode solve(PlannerResponse& response, const bool verbose = false) override;
 
   bool terminate() override;

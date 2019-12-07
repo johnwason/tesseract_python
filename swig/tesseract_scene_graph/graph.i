@@ -8,6 +8,12 @@
 
 %shared_ptr(tesseract_scene_graph::SceneGraph)
 
+%template(tesseract_scene_graph_LinkVector) std::vector<std::shared_ptr<tesseract_scene_graph::Link> >;
+%template(tesseract_scene_graph_JointVector) std::vector<std::shared_ptr<tesseract_scene_graph::Joint> >;
+
+%template(tesseract_scene_graph_LinkConstVector) std::vector<std::shared_ptr<tesseract_scene_graph::Link const> >;
+%template(tesseract_scene_graph_JointConstVector) std::vector<std::shared_ptr<tesseract_scene_graph::Joint const> >;
+
 namespace tesseract_scene_graph
 {
 class SceneGraph

@@ -322,6 +322,8 @@ John Wason:
   SWIG_fail;
 }
 
+%feature("novaluewrapper") std::vector<CLASS >;
+%template() std::vector<CLASS >;
 %typemap(out, fragment="Eigen_Fragments") std::vector<CLASS >
 {
   $result = PyList_New($1.size());
@@ -347,6 +349,21 @@ John Wason:
   }
   $1 = temp;
 }
+
+%typemap(in, fragment="Eigen_Fragments") std::vector<CLASS > const& (std::vector<CLASS > temp)
+{
+  if (!PyList_Check($input))
+    SWIG_fail;
+  temp.resize(PyList_Size($input));
+  for (size_t i=0; i != PyList_Size($input); ++i) {
+    if (!ConvertFromNumpyToEigenMatrix<CLASS >(&(temp[i]), PyList_GetItem($input, i)))
+      SWIG_fail;
+  }
+  $1 = &temp;
+}
+
+%typemap(argout, fragment="Eigen_Fragments") std::vector<CLASS > const& ""
+%typemap(freearg, fragment="Eigen_Fragments") std::vector<CLASS > const& ""
 
 %typecheck(SWIG_TYPECHECK_DOUBLE_ARRAY)
     CLASS,

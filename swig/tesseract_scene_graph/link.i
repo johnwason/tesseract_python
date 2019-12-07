@@ -11,13 +11,8 @@
 %shared_ptr(tesseract_scene_graph::Link)
 %shared_ptr(tesseract_geometry::Geometry)
 
-%template(tesseract_scene_graph_VisualVector) std::vector<tesseract_scene_graph::Visual::Ptr>;
-%template(tesseract_scene_graph_CollisionVector) std::vector<tesseract_scene_graph::Collision::Ptr>;
-
-namespace tesseract_geometry
-{
-    class Geometry;
-}
+%template(tesseract_scene_graph_VisualVector) std::vector<std::shared_ptr<tesseract_scene_graph::Visual> >;
+%template(tesseract_scene_graph_CollisionVector) std::vector<std::shared_ptr<tesseract_scene_graph::Collision> >;
 
 namespace tesseract_scene_graph
 {

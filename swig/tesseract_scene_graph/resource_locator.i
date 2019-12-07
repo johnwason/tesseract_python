@@ -2,6 +2,7 @@
 #include <tesseract_scene_graph/resource_locator.h>
 %}
 
+%feature("director") ResourceLocator;
 %shared_ptr(tesseract_scene_graph::ResourceLocator)
 
 namespace tesseract_scene_graph

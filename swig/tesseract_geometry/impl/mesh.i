@@ -29,7 +29,7 @@ public:
       return new tesseract_geometry::Mesh(vertices1, faces1, resource, scale);
   }
 
-  Mesh(const const tesseract_common::VectorVector3d& vertices,
+  Mesh(const tesseract_common::VectorVector3d& vertices,
              const const Eigen::VectorXi& faces,
              int face_count,
              tesseract_common::Resource::Ptr resource = nullptr,
@@ -44,12 +44,12 @@ public:
 
 %extend {
 
-  const tesseract_common::VectorVector3d getVertices()
+  tesseract_common::VectorVector3d getVertices()
   {
     return *$self->getVertices();
   }
 
-  const Eigen::VectorXi getTriangles()
+  Eigen::VectorXi getTriangles()
   {
     return *$self->getTriangles();
   }
@@ -60,6 +60,6 @@ public:
 
   const tesseract_common::Resource::Ptr getResource();
 
-  const Eigen::Vector3d& getScale() const { return scale_; }
+  const Eigen::Vector3d getScale();
 };
 }  // namespace tesseract_geometry

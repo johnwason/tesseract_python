@@ -57,6 +57,11 @@
   SWIG_CATCH_STDEXCEPT  
 }
 
+%feature("director:except") {
+    if ($error != NULL) {
+        throw Swig::DirectorMethodException();
+    }
+}
 
 %include "eigen.i"
 %include "shared_factory.i"

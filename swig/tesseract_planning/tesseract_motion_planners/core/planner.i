@@ -16,8 +16,14 @@ public:
   
   void setRequest(const PlannerRequest& request);
   
+  %rename(_solve) solve;
   virtual tesseract_common::StatusCode solve(PlannerResponse& res, const bool verbose = false) = 0;
-
+  %pythoncode %{
+  def solve(self, verbose=False):
+      response = PlannerResponse()
+      status_code = self._solve(response, verbose)
+      return status_code, response
+  %}
   virtual tesseract_common::StatusCode isConfigured() const = 0;
 
   virtual bool terminate() = 0;

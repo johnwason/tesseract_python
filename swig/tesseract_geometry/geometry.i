@@ -39,7 +39,7 @@ using Geometrys = std::vector<Geometry::Ptr>;
 using GeometrysConst = std::vector<Geometry::ConstPtr>;
 }  // namespace tesseract_geometry
 
-%template(tesseract_geometry_Geometrys) std::vector<std::shared_ptr<tesseract_geometry::Geometry> >;
-%template(tesseract_geometry_GeometrysConst) std::vector<std::shared_ptr<const tesseract_geometry::Geometry> >;
+%template(tesseract_geometry_Geometries) std::vector<std::shared_ptr<tesseract_geometry::Geometry> >;
+%template(tesseract_geometry_GeometriesConst) std::vector<std::shared_ptr<const tesseract_geometry::Geometry> >;
 
 

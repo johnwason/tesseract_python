@@ -24,7 +24,7 @@
 // Convert to Eigen for DblVec so numpy shows up on Python side
 %typemap(out, fragment="Eigen_Fragments") std::vector<double>*, std::vector<double> const*
 {
-  Eigen::VectorXd temp_matrix=Eigen::Map<Eigen::VectorXd>(&$1->at(0),$1->size());
+  Eigen::VectorXd temp_matrix=Eigen::Map<Eigen::VectorXd>(&(*$1)[0],$1->size());
   if (!ConvertFromEigenToNumPyMatrix<Eigen::VectorXd >(&$result, &temp_matrix))
     SWIG_fail;
 }
@@ -41,7 +41,7 @@
 // Convert to Eigen for DblVec so numpy shows up on Python side
 %typemap(out, fragment="Eigen_Fragments") std::vector<int>*, std::vector<int> const*
 {
-  Eigen::VectorXi temp_matrix=Eigen::Map<Eigen::VectorXi>(&$1->at(0),$1->size());
+  Eigen::VectorXi temp_matrix=Eigen::Map<Eigen::VectorXi>(&(*$1)[0],$1->size());
   if (!ConvertFromEigenToNumPyMatrix<Eigen::VectorXi >(&$result, &temp_matrix))
     SWIG_fail;
 }
@@ -198,6 +198,9 @@ struct InitInfo
 class TermInfo
 {
 public:
+
+  using Ptr = std::shared_ptr<TermInfo>;
+
   std::string name;
   int term_type;
   int getSupportedTypes();
@@ -221,6 +224,8 @@ public:
 
   tesseract_environment::Environment::ConstPtr env;
   tesseract_kinematics::ForwardKinematics::ConstPtr kin;
+
+  tesseract_kinematics::ForwardKinematics::ConstPtr getManipulator(const std::string& name) const;
 
   ProblemConstructionInfo(tesseract::Tesseract::ConstPtr tesseract);
   void fromJson(const Json::Value& v);
@@ -331,7 +336,7 @@ struct SafetyMarginData
 	
 };
 
-std::vector<SafetyMarginData::Ptr> createSafetyMarginDataVector(int num_elements,
+std::vector<std::shared_ptr<SafetyMarginData> > createSafetyMarginDataVector(int num_elements,
                                                                 const double& default_safety_margin,
                                                                 const double& default_safety_margin_coeff);
 
@@ -341,7 +346,7 @@ public:
   int first_step, last_step;
   bool continuous;
   int gap;
-  std::vector<SafetyMarginData::Ptr> info;
+  std::vector<std::shared_ptr<SafetyMarginData> > info;
   void fromJson(ProblemConstructionInfo& pci, const Json::Value& v);
   void hatch(TrajOptProb& prob);
 };

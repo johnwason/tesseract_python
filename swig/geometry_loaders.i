@@ -3,8 +3,9 @@
 %}
 %include <pybuffer.i>
 
-%shared_ptr(BytesResource)
+%pybuffer_binary(const uint8_t* bytes, size_t bytes_len);
 
+%shared_ptr(BytesResource)
 class BytesResource : public tesseract_common::Resource
 {
 public:
@@ -15,8 +16,6 @@ public:
   virtual std::vector<uint8_t> getResourceContents() override;
   virtual std::shared_ptr<std::istream> getResourceContentStream() override;
 };
-
-%pybuffer_binary(const uint8_t* bytes, size_t bytes_len);
 
 std::vector<tesseract_geometry::Mesh::Ptr> createMeshFromBytes(const std::string& url, const uint8_t* bytes, size_t bytes_len, 
                                                               Eigen::Vector3d scale = Eigen::Vector3d(1, 1, 1),
