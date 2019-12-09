@@ -1,0 +1,54 @@
+# This config file for Travis CI
+sudo: required
+dist: trusty
+language: generic
+
+services:
+  - docker
+
+cache:
+  directories:
+    - $HOME/.ccache
+
+git:
+  quiet: true
+
+notifications:
+  email:
+    recipients:
+      - wason@wasontech.com
+
+env:
+  global:
+    - CCACHE_DIR=$HOME/.ccache
+    - UPSTREAM_WORKSPACE=file
+    - ROSINSTALL_FILENAME=dependencies.rosinstall
+    - ROS_REPO=ros
+    - NOT_TEST_INSTALL=true
+    - CMAKE_ARGS=-DENABLE_TESTS=ON
+
+matrix:
+  include:
+    - env: ROS_DISTRO=melodic CLANG_FORMAT_CHECK=file CLANG_FORMAT_VERSION=8
+      git:
+        submodules: false
+    - env: ROS_DISTRO=kinetic
+    - env: ROS_DISTRO=melodic ROS_PARALLEL_JOBS=-j2 CATKIN_PARALLEL_JOBS=-p1 # Travis was running out of resources and hanging for melodic builds
+
+install:
+  - git clone --quiet --depth=1 https://github.com/ros-industrial/industrial_ci.git .industrial_ci
+  - | 
+      (
+      rm -rf swig_build_dir
+      mkdir -p swig_build_dir
+      cd swig_build_dir
+      curl -L http://prdownloads.sourceforge.net/swig/swig-4.0.1.tar.gz --output swig-4.0.1.tar.gz
+      tar xf swig-4.0.1.tar.gz
+      cd swig-4.0.1            
+      ./configure
+      make
+      sudo make install
+      )
+
+script:
+  - .industrial_ci/travis.sh
