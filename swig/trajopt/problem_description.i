@@ -140,6 +140,9 @@ enum TermType
 class TrajOptProb
 {
 public:
+
+  using Ptr = std::shared_ptr<TrajOptProb>;
+  
   TrajOptProb();
   TrajOptProb(int n_steps, const ProblemConstructionInfo& pci);
   virtual ~TrajOptProb();

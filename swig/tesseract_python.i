@@ -81,6 +81,7 @@
 %include "tesseract_kinematics/core/forward_kinematics_factory.i"
 %include "tesseract_kinematics/core/inverse_kinematics.i"
 %include "tesseract_kinematics/core/inverse_kinematics_factory.i"
+%include "tesseract_collision/types.i"
 %include "tesseract_collision/discrete_contact_manager.i"
 %include "tesseract_collision/discrete_contact_manager_factory.i"
 %include "tesseract_collision/continuous_contact_manager.i"

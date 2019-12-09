@@ -53,6 +53,7 @@ John Wason:
 %}
 
 %include "numpy.i"
+%include <std_vector.i>
 
 %init
 %{

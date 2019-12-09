@@ -58,9 +58,16 @@ public:
   //virtual void setIsContactAllowedFn(IsContactAllowedFn fn) = 0;
 
   //virtual IsContactAllowedFn getIsContactAllowedFn() const = 0;
-
-  // TODO: This may not work in Python
-  virtual void contactTest(ContactResultMap& collisions, const ContactTestType& type) = 0;
+  
+  //virtual void contactTest(ContactResultMap& collisions, const ContactTestType& type) = 0;
+  %extend {
+    tesseract_collision::ContactResultMap contactTest(const tesseract_collision::ContactTestType& type)
+    {
+        tesseract_collision::ContactResultMap contacts;
+        $self->contactTest(contacts, type);
+        return contacts;
+    }
+  }
 };
 
 }  // namespace tesseract_collision

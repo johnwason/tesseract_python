@@ -58,7 +58,11 @@ include(UseSWIG)
 
 set(SWIG_CXX_EXTENSION cxx)
 set_property(SOURCE swig/tesseract_python.i PROPERTY CPLUSPLUS ON)
+if (${PYTHON_VERSION_MAJOR} LESS 3)
 set_property(SOURCE swig/tesseract_python.i PROPERTY SWIG_FLAGS -relativeimport -threads)
+else()
+set_property(SOURCE swig/tesseract_python.i PROPERTY SWIG_FLAGS -relativeimport -threads -py3)
+endif()
 
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract)
 set(SWIG_OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
@@ -79,6 +83,10 @@ target_include_directories(${SWIG_MODULE_tesseract_python_REAL_NAME}  SYSTEM PUB
 
 set_target_properties(${SWIG_MODULE_tesseract_python_REAL_NAME}
   PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract)
+set_target_properties(${SWIG_MODULE_tesseract_python_REAL_NAME}
+  PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract)
+set_target_properties(${SWIG_MODULE_tesseract_python_REAL_NAME}
+  PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract)
 
 add_custom_command(TARGET ${SWIG_MODULE_tesseract_python_REAL_NAME} POST_BUILD COMMAND 
 ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/swig/__init__.py
@@ -161,3 +169,12 @@ endif()
 install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_BINARY_DIR}/python\")
 execute_process(COMMAND python setup.py install -f
 --root=/ --prefix=${CMAKE_INSTALL_PREFIX} ${SETUPTOOLS_ARG_EXTRA} --single-version-externally-managed WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python)")
+
+if(ENABLE_TESTS)
+  enable_testing()
+  add_test (NAME python-tests
+  COMMAND ${PYTHON_EXECUTABLE} -m pytest
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+endif()
