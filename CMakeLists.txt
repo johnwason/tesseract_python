@@ -175,6 +175,10 @@ if(ENABLE_TESTS)
   add_test (NAME python-tests
   COMMAND ${PYTHON_EXECUTABLE} -m pytest
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
+  )
+  
+  find_package(tesseract_support REQUIRED)
+  set_tests_properties(python-tests PROPERTIES ENVIRONMENT "TESSERACT_SUPPORT_DIR=${TESSERACT_SUPPORT_DIR}")
+  
 
 endif()

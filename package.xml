@@ -23,6 +23,7 @@
   <depend>python-numpy</depend>  
   <build_depend>swig</build_depend>
   <build_depend>python-dev</build_depend>
+  <test_depend>python-pytest</test_depend>
 
   <export>    
     <build_type>cmake</build_type>
